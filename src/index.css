@@ -538,35 +538,51 @@ button {
   }
 
   .game-screen__cards {
-    flex-direction: column;
-    gap: 16px;
+    flex-direction: row;
+    gap: 12px;
   }
 
   .game-screen__vs {
-    margin: -8px 0;
+    margin: 0;
   }
 
   .vs-text {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 
   .vs-glow {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
   }
 
   .actor-card {
-    max-width: 320px;
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .actor-card__info {
+    padding: 12px 12px 16px;
+    margin-top: -40px;
+  }
+
+  .actor-card__name {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+
+  .actor-card__tagline {
+    font-size: 0.75rem;
   }
 
   .actor-card__image-wrapper {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 4;
   }
 
   .actor-card__choose-hint {
     transform: translateY(0);
-    padding: 10px;
-    font-size: 0.85rem;
+    padding: 8px;
+    font-size: 0.75rem;
   }
 
   .result-screen__card {
@@ -589,19 +605,37 @@ button {
 
 @media (max-width: 400px) {
   .app {
-    padding: 16px 10px;
+    padding: 16px 8px;
   }
 
   .app__logo {
     font-size: 1.8rem;
   }
 
-  .actor-card {
-    max-width: 280px;
+  .game-screen__cards {
+    gap: 8px;
+  }
+
+  .vs-text {
+    font-size: 1rem;
+  }
+
+  .vs-glow {
+    width: 36px;
+    height: 36px;
   }
 
   .actor-card__name {
-    font-size: 1.15rem;
+    font-size: 0.95rem;
+  }
+
+  .actor-card__tagline {
+    font-size: 0.65rem;
+  }
+
+  .actor-card__info {
+    padding: 10px 8px 12px;
+    margin-top: -30px;
   }
 
   .result-screen__card {
