@@ -24,48 +24,36 @@ const moviesList = [
     { name: "The Dark Knight", tagline: "Why so serious?", genres: ["Action", "Crime", "Drama"] }
 ];
 
-async function fetchTMDBImage(movieName) {
+async function fetchWikiImage(movieName) {
     try {
-        const query = encodeURIComponent(movieName);
-        // Using a free public TMDB proxy or OMDB if possible? 
-        // Let's use TVMaze API which is free without keys, though it's for TV.
-        // For movies, let's use the Wikipedia info again but with prop=images and fetch the first one.
-
         let title = encodeURIComponent(movieName + " (film)");
-        let url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&redirects=1&prop=images&imlimit=5&format=json`;
+        let url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&redirects=1&prop=pageimages&format=json&pithumbsize=500`;
         let res = await fetch(url, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
         let json = await res.json();
         let pages = json.query.pages;
         let pageId = Object.keys(pages)[0];
+        let imgUrl = pages[pageId]?.thumbnail ? pages[pageId].thumbnail.source : null;
 
-        if (pageId === "-1") {
+        if (!imgUrl) {
+            // Try without "(film)"
             title = encodeURIComponent(movieName);
-            url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&redirects=1&prop=images&imlimit=5&format=json`;
+            url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&redirects=1&prop=pageimages&format=json&pithumbsize=500`;
             res = await fetch(url, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
             json = await res.json();
             pages = json.query.pages;
             pageId = Object.keys(pages)[0];
+            imgUrl = pages[pageId]?.thumbnail ? pages[pageId].thumbnail.source : null;
         }
 
-        if (pageId !== "-1" && pages[pageId].images) {
-            // Find an image that looks like a poster
-            const images = pages[pageId].images;
-            let posterFile = images.find(img => img.title.toLowerCase().includes('poster') || img.title.toLowerCase().includes('cover'));
-            if (!posterFile) posterFile = images[0]; // fallback
-
-            if (posterFile) {
-                const imgTitle = encodeURIComponent(posterFile.title);
-                const imgUrlReq = `https://en.wikipedia.org/w/api.php?action=query&titles=${imgTitle}&prop=imageinfo&iiprop=url&format=json`;
-                const imgRes = await fetch(imgUrlReq, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
-                const imgJson = await imgRes.json();
-                const imgPages = imgJson.query.pages;
-                const imgPageId = Object.keys(imgPages)[0];
-                if (imgPages[imgPageId].imageinfo) {
-                    return imgPages[imgPageId].imageinfo[0].url;
-                }
-            }
+        if (!imgUrl) {
+            // Fallbacks for specific movies
+            if (movieName === "Oldboy") return "https://upload.wikimedia.org/wikipedia/en/thumb/6/67/Oldboykoreanposter.jpg/500px-Oldboykoreanposter.jpg";
+            if (movieName === "Parasite") return "https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Parasite_%282019_film%29.png/500px-Parasite_%282019_film%29.png";
+            if (movieName === "Se7en") return "https://upload.wikimedia.org/wikipedia/en/thumb/6/68/Seven_%28movie%29_poster.jpg/500px-Seven_%28movie%29_poster.jpg";
+            return "https://via.placeholder.com/500x750?text=No+Image";
         }
-        return "https://via.placeholder.com/500x750?text=No+Image";
+
+        return imgUrl;
     } catch (e) {
         return "https://via.placeholder.com/500x750?text=Error";
     }
@@ -75,12 +63,12 @@ async function run() {
     const finalMovies = [];
     for (let i = 0; i < moviesList.length; i++) {
         const movie = moviesList[i];
-        console.log(`Fetching poster for ${movie.name}...`);
-        const imgUrl = await fetchTMDBImage(movie.name);
+        console.log(`Fetching image for ${movie.name}...`);
+        const imgUrl = await fetchWikiImage(movie.name);
         finalMovies.push({
             id: i + 1,
             name: movie.name,
-            image: imgUrl,
+            image: imgUrl || "https://via.placeholder.com/500x750?text=No+Image",
             tagline: movie.tagline,
             genres: movie.genres
         });

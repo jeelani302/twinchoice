@@ -1,0 +1,5 @@
+commit 7e4fc44815c16479cb87e1e8ddc57734bea11c3f
+Author: jeelani302 <shahjeelani302@gmail.com>
+Date:   Wed Mar 4 04:26:08 2026 +0530
+
+    fix(movies): replace wikipedia fetch with direct tmdb poster URLs
