@@ -6,50 +6,66 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const moviesList = [
-    { name: "Prisoners", tagline: "", genres: [] },
-    { name: "Memories of Murder", tagline: "", genres: [] },
-    { name: "Inglourious Basterds", tagline: "", genres: [] },
-    { name: "Parasite", tagline: "", genres: [] },
-    { name: "Interstellar", tagline: "", genres: [] },
-    { name: "Oldboy", tagline: "", genres: [] },
-    { name: "Fight Club", tagline: "", genres: [] },
-    { name: "The Shawshank Redemption", tagline: "", genres: [] },
-    { name: "The Godfather", tagline: "", genres: [] },
-    { name: "Mad Max: Fury Road", tagline: "", genres: [] },
-    { name: "Whiplash", tagline: "", genres: [] },
-    { name: "The Matrix", tagline: "", genres: [] },
-    { name: "Goodfellas", tagline: "", genres: [] },
-    { name: "Se7en", tagline: "", genres: [] },
-    { name: "Good Will Hunting", tagline: "", genres: [] },
-    { name: "The Dark Knight", tagline: "", genres: [] } // 16 movies
+    { name: "Prisoners", tagline: "Every moment matters", genres: ["Crime", "Drama", "Mystery"] },
+    { name: "Memories of Murder", tagline: "A serial killer in the countryside", genres: ["Crime", "Drama", "Mystery"] },
+    { name: "Inglourious Basterds", tagline: "If you need heroes, send in the Basterds", genres: ["Adventure", "Drama", "War"] },
+    { name: "Parasite", tagline: "Act like you own the place", genres: ["Comedy", "Drama", "Thriller"] },
+    { name: "Interstellar", tagline: "Mankind was born on Earth. It was never meant to die here.", genres: ["Adventure", "Drama", "Sci-Fi"] },
+    { name: "Oldboy", tagline: "15 years of imprisonment, 5 days of vengeance", genres: ["Action", "Drama", "Mystery"] },
+    { name: "Fight Club", tagline: "Mischief. Mayhem. Soap.", genres: ["Drama"] },
+    { name: "The Shawshank Redemption", tagline: "Fear can hold you prisoner. Hope can set you free.", genres: ["Drama"] },
+    { name: "The Godfather", tagline: "An offer you can't refuse.", genres: ["Crime", "Drama"] },
+    { name: "Mad Max: Fury Road", tagline: "What a lovely day.", genres: ["Action", "Adventure", "Sci-Fi"] },
+    { name: "Whiplash", tagline: "The road to greatness can take you to the edge.", genres: ["Drama", "Music"] },
+    { name: "The Matrix", tagline: "Welcome to the Real World.", genres: ["Action", "Sci-Fi"] },
+    { name: "Goodfellas", tagline: "As far back as I can remember, I always wanted to be a gangster.", genres: ["Biography", "Crime", "Drama"] },
+    { name: "Se7en", tagline: "Seven deadly sins. Seven ways to die.", genres: ["Crime", "Drama", "Mystery"] },
+    { name: "Good Will Hunting", tagline: "Wildly brilliant.", genres: ["Drama", "Romance"] },
+    { name: "The Dark Knight", tagline: "Why so serious?", genres: ["Action", "Crime", "Drama"] }
 ];
 
-async function fetchWikiImage(movieName) {
+async function fetchTMDBImage(movieName) {
     try {
-        const title = encodeURIComponent(movieName + " (film)");
-        const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&redirects=1&prop=pageimages&format=json&pithumbsize=500`;
-        const res = await fetch(url, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
+        const query = encodeURIComponent(movieName);
+        // Using a free public TMDB proxy or OMDB if possible? 
+        // Let's use TVMaze API which is free without keys, though it's for TV.
+        // For movies, let's use the Wikipedia info again but with prop=images and fetch the first one.
 
-        if (!res.ok) {
-            return "https://via.placeholder.com/500x750?text=Error";
-        }
-        const json = await res.json();
-        const pages = json.query.pages;
+        let title = encodeURIComponent(movieName + " (film)");
+        let url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&redirects=1&prop=images&imlimit=5&format=json`;
+        let res = await fetch(url, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
+        let json = await res.json();
+        let pages = json.query.pages;
         let pageId = Object.keys(pages)[0];
 
-        let imgUrl = pages[pageId]?.thumbnail ? pages[pageId].thumbnail.source : null;
-
-        // If it fails with " (film)", try without it
-        if (!imgUrl || pageId === "-1") {
-            const title2 = encodeURIComponent(movieName);
-            const url2 = `https://en.wikipedia.org/w/api.php?action=query&titles=${title2}&redirects=1&prop=pageimages&format=json&pithumbsize=500`;
-            const res2 = await fetch(url2, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
-            const json2 = await res2.json();
-            const pages2 = json2.query.pages;
-            const pageId2 = Object.keys(pages2)[0];
-            imgUrl = pages2[pageId2]?.thumbnail ? pages2[pageId2].thumbnail.source : "https://via.placeholder.com/500x750?text=No+Image";
+        if (pageId === "-1") {
+            title = encodeURIComponent(movieName);
+            url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&redirects=1&prop=images&imlimit=5&format=json`;
+            res = await fetch(url, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
+            json = await res.json();
+            pages = json.query.pages;
+            pageId = Object.keys(pages)[0];
         }
-        return imgUrl;
+
+        if (pageId !== "-1" && pages[pageId].images) {
+            // Find an image that looks like a poster
+            const images = pages[pageId].images;
+            let posterFile = images.find(img => img.title.toLowerCase().includes('poster') || img.title.toLowerCase().includes('cover'));
+            if (!posterFile) posterFile = images[0]; // fallback
+
+            if (posterFile) {
+                const imgTitle = encodeURIComponent(posterFile.title);
+                const imgUrlReq = `https://en.wikipedia.org/w/api.php?action=query&titles=${imgTitle}&prop=imageinfo&iiprop=url&format=json`;
+                const imgRes = await fetch(imgUrlReq, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
+                const imgJson = await imgRes.json();
+                const imgPages = imgJson.query.pages;
+                const imgPageId = Object.keys(imgPages)[0];
+                if (imgPages[imgPageId].imageinfo) {
+                    return imgPages[imgPageId].imageinfo[0].url;
+                }
+            }
+        }
+        return "https://via.placeholder.com/500x750?text=No+Image";
     } catch (e) {
         return "https://via.placeholder.com/500x750?text=Error";
     }
@@ -59,8 +75,8 @@ async function run() {
     const finalMovies = [];
     for (let i = 0; i < moviesList.length; i++) {
         const movie = moviesList[i];
-        console.log(`Fetching image for ${movie.name}...`);
-        const imgUrl = await fetchWikiImage(movie.name);
+        console.log(`Fetching poster for ${movie.name}...`);
+        const imgUrl = await fetchTMDBImage(movie.name);
         finalMovies.push({
             id: i + 1,
             name: movie.name,
