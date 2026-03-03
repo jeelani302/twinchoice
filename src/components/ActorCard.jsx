@@ -24,7 +24,6 @@ export default function ActorCard({ actor, onChoose, animationKey, side }) {
             </div>
             <div className="actor-card__info">
                 <h2 className="actor-card__name">{actor.name}</h2>
-                <p className="actor-card__tagline">{actor.tagline}</p>
             </div>
             <div className="actor-card__choose-hint">
                 <span>Choose</span>
