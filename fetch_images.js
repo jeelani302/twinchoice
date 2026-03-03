@@ -1,6 +1,9 @@
-const https = require('https');
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const actorsList = [
     { name: "Marlon Brando", tagline: "The pioneer of method acting", genres: ["Drama", "Crime", "Classic"] },
@@ -21,30 +24,22 @@ const actorsList = [
     { name: "Keanu Reeves", tagline: "Action legend with a heart of gold", genres: ["Action", "Sci-Fi", "Thriller"] } // 16 actors
 ];
 
-function fetchWikiImage(actorName) {
-    return new Promise((resolve) => {
+async function fetchWikiImage(actorName) {
+    try {
         const title = encodeURIComponent(actorName);
         const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${title}&prop=pageimages&format=json&pithumbsize=500`;
+        const res = await fetch(url, { headers: { 'User-Agent': 'TwinChoice/1.0 (contact@example.com)' } });
 
-        https.get(url, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => {
-                try {
-                    const json = JSON.parse(data);
-                    const pages = json.query.pages;
-                    const pageId = Object.keys(pages)[0];
-                    const imgUrl = pages[pageId].thumbnail ? pages[pageId].thumbnail.source : "https://via.placeholder.com/500x750?text=No+Image";
-
-                    resolve(imgUrl);
-                } catch (e) {
-                    resolve("https://via.placeholder.com/500x750?text=Error");
-                }
-            });
-        }).on('error', () => {
-            resolve("https://via.placeholder.com/500x750?text=Error");
-        });
-    });
+        if (!res.ok) {
+            return "https://via.placeholder.com/500x750?text=Error";
+        }
+        const json = await res.json();
+        const pages = json.query.pages;
+        const pageId = Object.keys(pages)[0];
+        return pages[pageId].thumbnail ? pages[pageId].thumbnail.source : "https://via.placeholder.com/500x750?text=No+Image";
+    } catch (e) {
+        return "https://via.placeholder.com/500x750?text=Error";
+    }
 }
 
 async function run() {
