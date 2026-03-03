@@ -10,7 +10,6 @@ const actorsList = [
     { name: "Al Pacino", tagline: "Intense energy and iconic crime boss roles", genres: ["Crime", "Drama", "Thriller"] },
     { name: "Robert De Niro", tagline: "Chameleon-like devotion to complex characters", genres: ["Crime", "Drama", "Thriller"] },
     { name: "Clint Eastwood", tagline: "The ultimate western anti-hero and tough guy", genres: ["Western", "Action", "Drama"] },
-    { name: "Harrison Ford", tagline: "The quintessential charming rogue of adventure", genres: ["Action", "Sci-Fi", "Adventure"] },
     { name: "Denzel Washington", tagline: "Commanding screen presence and gravitas", genres: ["Drama", "Action", "Thriller"] },
     { name: "Tom Hanks", tagline: "America's most beloved everyman", genres: ["Drama", "Comedy", "War"] },
     { name: "Morgan Freeman", tagline: "The voice of wisdom and gravitas", genres: ["Drama", "Mystery", "Crime"] },
@@ -20,8 +19,11 @@ const actorsList = [
     { name: "Brad Pitt", tagline: "Cool charisma meets artistic ambition", genres: ["Drama", "Action", "Comedy"] },
     { name: "Christian Bale", tagline: "Extreme dedication and physical transformation", genres: ["Action", "Drama", "Thriller"] },
     { name: "Joaquin Phoenix", tagline: "Raw vulnerability and unpredictable intensity", genres: ["Drama", "Thriller", "Biopic"] },
-    { name: "Samuel L. Jackson", tagline: "Electrifying energy on every screen", genres: ["Action", "Thriller", "Crime"] },
-    { name: "Keanu Reeves", tagline: "Action legend with a heart of gold", genres: ["Action", "Sci-Fi", "Thriller"] } // 16 actors
+    { name: "Keanu Reeves", tagline: "Action legend with a heart of gold", genres: ["Action", "Sci-Fi", "Thriller"] },
+    { name: "Mads Mikkelsen", tagline: "Mesmerizing intensity and profound subtlety", genres: ["Drama", "Thriller"] },
+    { name: "Jake Gyllenhaal", tagline: "Versatile commitment to complex, darker roles", genres: ["Drama", "Thriller"] },
+    { name: "Cillian Murphy", tagline: "Piercing presence and quiet intensity", genres: ["Drama", "Thriller"] },
+    { name: "Daniel Day-Lewis", tagline: "Unparalleled immersion and legendary method acting", genres: ["Drama", "Historical"] } // 18 actors
 ];
 
 async function fetchWikiImage(actorName) {
