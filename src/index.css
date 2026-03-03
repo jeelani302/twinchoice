@@ -216,6 +216,55 @@ button {
   font-size: 1.05rem;
 }
 
+/* ---------- Category Select ---------- */
+.category-select {
+  text-align: center;
+  animation: fadeInUp 0.5s ease-out;
+  margin: auto 0;
+}
+
+.category-select__heading {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  text-shadow: 0 0 16px var(--accent-glow);
+}
+
+.category-select__buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.category-select__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 40px;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.category-select__btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(124, 58, 237, 0.25);
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+}
+
+.category-select__btn:active {
+  transform: translateY(0);
+}
+
 /* ---------- Game Screen ---------- */
 .game-screen {
   width: 100%;

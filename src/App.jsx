@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import actorsData from "./data/actors";
+import moviesData from "./data/movies";
 import GameScreen from "./components/GameScreen";
 import ResultScreen from "./components/ResultScreen";
 import ProgressBar from "./components/ProgressBar";
@@ -14,8 +15,9 @@ function shuffle(arr) {
     return a;
 }
 
-function initGame() {
-    const shuffled = shuffle(actorsData);
+function initGame(category) {
+    const data = category === "movies" ? moviesData : actorsData;
+    const shuffled = shuffle(data);
     return {
         champion: shuffled[0],
         challenger: shuffled[1],
@@ -23,13 +25,14 @@ function initGame() {
         eliminated: [],
         gameOver: false,
         round: 0,
+        started: true,
+        category: category,
+        totalItems: data.length
     };
 }
 
 export default function App() {
-    const [state, setState] = useState(initGame);
-
-    const totalActors = actorsData.length;
+    const [state, setState] = useState({ started: false, category: null });
 
     const handleChoose = useCallback((chosen) => {
         setState((prev) => {
@@ -65,11 +68,15 @@ export default function App() {
         });
     }, []);
 
-    const handleRestart = useCallback(() => {
-        setState(initGame());
+    const startGame = useCallback((category) => {
+        setState(initGame(category));
     }, []);
 
-    const remaining = state.remaining.length + (state.gameOver ? 0 : 2);
+    const handleRestart = useCallback(() => {
+        setState({ started: false, category: null });
+    }, []);
+
+    const remainingItems = state.started ? state.remaining.length + (state.gameOver ? 0 : 2) : 0;
 
     return (
         <div className="app">
@@ -82,15 +89,34 @@ export default function App() {
 
             <header className="app__header" id="app-header">
                 <h1 className="app__logo">
-                    <span className="app__logo-twin">Twin</span>
-                    <span className="app__logo-choice">Choice</span>
+                    <span className="app__logo-twin">TwinChoice</span>
+                    <span className="app__logo-choice"> - Showdown</span>
                 </h1>
+                <p className="app__subtitle">Pick your ultimate choice in a head-to-head elimination game</p>
             </header>
 
             <main className="app__main">
-                {!state.gameOver && (
+                {!state.started && (
+                    <div className="category-select">
+                        <h2 className="category-select__heading">Choose a Category</h2>
+                        <div className="category-select__buttons">
+                            <button className="category-select__btn" onClick={() => startGame('actors')}>
+                                🎬 Actors
+                            </button>
+                            <button className="category-select__btn" onClick={() => startGame('movies')}>
+                                🍿 Movies
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {state.started && !state.gameOver && (
                     <>
-                        <ProgressBar remaining={remaining} total={totalActors} />
+                        <ProgressBar
+                            remaining={remainingItems}
+                            total={state.totalItems}
+                            label={state.category === "movies" ? "movie" : "actor"}
+                        />
                         <GameScreen
                             champion={state.champion}
                             challenger={state.challenger}
@@ -100,7 +126,7 @@ export default function App() {
                     </>
                 )}
 
-                {state.gameOver && (
+                {state.started && state.gameOver && (
                     <ResultScreen
                         winner={state.champion}
                         eliminated={state.eliminated}
