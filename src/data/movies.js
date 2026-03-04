@@ -13,7 +13,7 @@ const movies = [
   {
     "id": 2,
     "name": "Memories of Murder",
-    "image": "https://upload.wikimedia.org/wikipedia/en/thumb/0/01/Salinui-chueok-south-korean-movie-poster-md.jpg/500px-Salinui-chueok-south-korean-movie-poster-md.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/dsEoTJKM1s5OVDkS2P2JdoTxo4K.jpg",
     "tagline": "A serial killer in the countryside",
     "genres": [
       "Crime",
@@ -24,7 +24,7 @@ const movies = [
   {
     "id": 3,
     "name": "Inglourious Basterds",
-    "image": "https://upload.wikimedia.org/wikipedia/en/c/c3/Inglourious_Basterds_poster.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/7sfbEnaARXDDhKm0CZ7D7uc2sbo.jpg",
     "tagline": "If you need heroes, send in the Basterds",
     "genres": [
       "Adventure",
@@ -77,7 +77,7 @@ const movies = [
   {
     "id": 8,
     "name": "The Shawshank Redemption",
-    "image": "https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg",
     "tagline": "Fear can hold you prisoner. Hope can set you free.",
     "genres": [
       "Drama"
@@ -96,7 +96,7 @@ const movies = [
   {
     "id": 10,
     "name": "Mad Max: Fury Road",
-    "image": "https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/Mad_Max_Fury_Road.jpg/500px-Mad_Max_Fury_Road.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/hA2ple9q4qnwxp3hKVNhroipsir.jpg",
     "tagline": "What a lovely day.",
     "genres": [
       "Action",

@@ -113,10 +113,10 @@ const indianActors = [
     },
     {
         "id": 117,
-        "name": "Pankaj Kapur",
-        "image": "https://image.tmdb.org/t/p/w500/q1ILNa9c4bVT7sr6yE6TUzGYaPu.jpg",
-        "tagline": "The master of craft",
-        "genres": ["Drama", "Arthouse", "Comedy"]
+        "name": "Pankaj Tripathi",
+        "image": "https://image.tmdb.org/t/p/w500/f3Vxz0QB7PHeyPcXrfJX14Xkxnu.jpg",
+        "tagline": "The master of natural acting",
+        "genres": ["Drama", "Comedy", "Crime"]
     },
     {
         "id": 118,
