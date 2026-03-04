@@ -131,6 +131,7 @@ export default function App() {
                         winner={state.champion}
                         eliminated={state.eliminated}
                         onRestart={handleRestart}
+                        section={state.category}
                     />
                 )}
             </main>

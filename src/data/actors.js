@@ -101,7 +101,7 @@ const actors = [
   {
     "id": 10,
     "name": "Leonardo DiCaprio",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/LeoPTABFI191125-28_%28cropped%29.jpg/500px-LeoPTABFI191125-28_%28cropped%29.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Leonardo_DiCaprio_2014.jpg/500px-Leonardo_DiCaprio_2014.jpg",
     "tagline": "Intense method actor known for dramatic roles",
     "genres": [
       "Drama",

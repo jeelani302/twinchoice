@@ -1,70 +1,84 @@
 import React, { useMemo } from "react";
 
-function generateSummary(winner, eliminated) {
+function generateSummary(winner, eliminated, section) {
     // Tally genres from all chosen winners along the way
-    const genreCounts = {};
-    const allChosen = [...eliminated.map((e) => e.loser ? null : e).filter(Boolean), winner];
-
-    // Actually, let's use the winner's genres + a fun quip
     const g = winner.genres || [];
     const primary = g[0] || "Drama";
+    const isActor = section === "actors";
 
-    const summaries = {
-        Drama:
-            "You're drawn to raw emotion and powerful storytelling. You value depth, vulnerability, and performances that leave you thinking for days.",
-        Action:
-            "You love adrenaline-pumping spectacles and larger-than-life heroes. Intensity and physicality speak to your soul.",
-        Comedy:
-            "You appreciate wit, charm, and the magic of laughter. Life's too short not to enjoy a brilliant comedic performance.",
-        "Sci-Fi":
-            "You're a visionary — fascinated by the unknown, drawn to futuristic worlds and mind-bending concepts.",
-        Thriller:
-            "You crave suspense and unpredictability. You love being kept on the edge of your seat, guessing what comes next.",
-        Biopic:
-            "You're inspired by real stories and the human spirit. True tales of triumph and struggle resonate deeply with you.",
-        Romance:
-            "You're a hopeless romantic at heart. Love stories and emotional connections are what make cinema magical for you.",
-        Fantasy:
-            "You love escapism and wonder. Magical worlds, epic quests, and larger-than-life mythology captivate your imagination.",
-        Musical:
-            "Rhythm, melody, and performance move you. You believe music and cinema together create the ultimate art form.",
-        Period:
-            "You appreciate elegance, history, and the beauty of bygone eras. Rich costumes and nuanced performances captivate you.",
-        Historical:
-            "You're drawn to stories rooted in truth. The weight of history and its heroes speak powerfully to you.",
-        Mystery:
-            "You love unraveling puzzles. Clever plots and unexpected revelations keep your mind engaged and delighted.",
-        Narration:
-            "You appreciate the power of a great voice and storytelling craft. Atmosphere and wisdom draw you in.",
+    const actorSummaries = {
+        Drama: "You're drawn to raw emotion and powerful storytelling. You value depth, vulnerability, and performances that leave you thinking for days.",
+        Action: "You love adrenaline-pumping spectacles and larger-than-life heroes. Intensity and physicality speak to your soul.",
+        Comedy: "You appreciate wit, charm, and the magic of laughter. Life's too short not to enjoy a brilliant comedic performance.",
+        "Sci-Fi": "You're a visionary — fascinated by the unknown, drawn to futuristic worlds and mind-bending concepts.",
+        Thriller: "You crave suspense and unpredictability. You love being kept on the edge of your seat, guessing what comes next.",
+        Biopic: "You're inspired by real stories and the human spirit. True tales of triumph and struggle resonate deeply with you.",
+        Romance: "You're a hopeless romantic at heart. Love stories and emotional connections are what make cinema magical for you.",
+        Fantasy: "You love escapism and wonder. Magical worlds, epic quests, and larger-than-life mythology captivate your imagination.",
+        Musical: "Rhythm, melody, and performance move you. You believe music and cinema together create the ultimate art form.",
+        Period: "You appreciate elegance, history, and the beauty of bygone eras. Rich costumes and nuanced performances captivate you.",
+        Historical: "You're drawn to stories rooted in truth. The weight of history and its heroes speak powerfully to you.",
+        Mystery: "You love unraveling puzzles. Clever plots and unexpected revelations keep your mind engaged and delighted.",
+        Narration: "You appreciate the power of a great voice and storytelling craft. Atmosphere and wisdom draw you in.",
     };
 
-    const taste = summaries[primary] || summaries["Drama"];
+    const movieSummaries = {
+        Drama: "You appreciate stories that explore the complexities of human nature, seeking out cinema that challenges and moves you deeply.",
+        Action: "You thrive on high-stakes adventure and kinetic storytelling. For you, the ultimate movie is an exhilarating ride of courage and skill.",
+        Comedy: "You believe in the power of joy and clever wit. You look for movies that can brighten any day with laughter and heart.",
+        "Sci-Fi": "You are a seeker of future possibilities. You love movies that break the boundaries of reality and expand the limits of your imagination.",
+        Thriller: "You enjoy the thrill of the chase and the tension of the unknown. Suspensful, twisting plots are your cinematic bread and butter.",
+        Crime: "You're fascinated by the undercurrents of society – the gritty, the moral grey areas, and the tension of the high-stakes underworld.",
+        Adventure: "You have a spirit of exploration. You love movies that take you on epic journeys to distant lands and untold stories.",
+        Horror: "You embrace the darkness and the adrenaline of the unknown. You appreciate movies that can haunt your thoughts and quicken your pulse.",
+        Mystery: "You are a detective at heart. You love unravelling complex puzzles and being outsmarted by a brilliant, hidden truth.",
+        War: "You're drawn to the weight of history and the resilience of the human spirit in the most challenging of times.",
+        Biography: "You find inspiration in true stories. You value the legacy of real people and the incredible journeys they've undertaken.",
+    };
 
-    return `Your choice of **${winner.name}** reveals a lot about you! ${taste}`;
+    const taste = isActor
+        ? (actorSummaries[primary] || actorSummaries["Drama"])
+        : (movieSummaries[primary] || movieSummaries["Drama"]);
+
+    const leadText = isActor
+        ? `Your choice of **${winner.name}** as your favorite actor reveals a lot about your taste!`
+        : `Your ultimate favorite movie is **${winner.name}**! This choice says something special about you.`;
+
+    return `${leadText} ${taste}`;
 }
 
-export default function ResultScreen({ winner, eliminated, onRestart }) {
+export default function ResultScreen({ winner, eliminated, onRestart, section }) {
     const summary = useMemo(
-        () => generateSummary(winner, eliminated),
-        [winner, eliminated]
+        () => generateSummary(winner, eliminated, section),
+        [winner, eliminated, section]
     );
+
+    const genresText = winner.genres ? winner.genres.join(" • ") : "";
 
     return (
         <div className="result-screen" id="result-screen">
             <div className="result-screen__card">
                 <div className="result-screen__trophy">👑</div>
-                <h1 className="result-screen__heading">Your Ultimate Favorite Actor</h1>
+                <h1 className="result-screen__heading">
+                    {section === "actors"
+                        ? "Your Ultimate Favorite Actor"
+                        : "Your Ultimate Favorite Movie"}
+                </h1>
                 <div className="result-screen__winner">
                     <div className="result-screen__image-wrapper">
                         <img
-                            src={winner.image}
-                            alt={winner.name}
+                            src={winner.image || winner.poster}
+                            alt={winner.name || winner.title}
                             className="result-screen__image"
                         />
                         <div className="result-screen__shine" />
                     </div>
-                    <h2 className="result-screen__name">{winner.name}</h2>
-                    <p className="result-screen__tagline">{winner.tagline}</p>
+                    <h2 className="result-screen__name">{winner.name || winner.title}</h2>
+                    <p className="result-screen__tagline">
+                        {winner.tagline && <span>"{winner.tagline}"</span>}
+                        {winner.tagline && genresText && <br />}
+                        {genresText && <span className="result-screen__genres">{genresText}</span>}
+                    </p>
                 </div>
 
                 <div className="result-screen__summary">
