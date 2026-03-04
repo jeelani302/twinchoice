@@ -112,7 +112,7 @@ export default function App() {
                 {!state.started && (
                     <div className="category-select">
                         <h2 className="category-select__heading">
-                            {!state.showActorSub ? "Choose a Category" : (state.subCategory === "indian" ? "Indian Actors" : "Foreign Actors")}
+                            {!state.showActorSub ? "Choose a Category" : "Select Actor Origin"}
                         </h2>
                         <div className="category-select__buttons">
                             {!state.showActorSub ? (
@@ -136,19 +136,13 @@ export default function App() {
                                         className="category-select__btn"
                                         onClick={() => startGame('actors', 'foreign')}
                                     >
-                                        🌍 Foreign Actors
+                                        Foreign Actors
                                     </button>
                                     <button
                                         className="category-select__btn"
                                         onClick={() => startGame('actors', 'indian')}
                                     >
-                                        🇮🇳 Indian Actors
-                                    </button>
-                                    <button
-                                        className="category-select__btn category-select__btn--back"
-                                        onClick={() => setState(s => ({ ...s, showActorSub: false }))}
-                                    >
-                                        ⬅️ Back
+                                        Indian Actors
                                     </button>
                                 </>
                             )}

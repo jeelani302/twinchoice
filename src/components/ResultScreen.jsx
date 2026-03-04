@@ -73,7 +73,7 @@ export default function ResultScreen({ winner, eliminated, onRestart, section, s
                 <div className="result-screen__winner">
                     <div className="result-screen__image-wrapper">
                         <img
-                            src={winner.image || winner.poster}
+                            src={`https://images.weserv.nl/?url=${encodeURIComponent(winner.image || winner.poster)}&w=600&h=800&fit=cover`}
                             alt={winner.name || winner.title}
                             className="result-screen__image"
                         />

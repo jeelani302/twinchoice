@@ -15,15 +15,15 @@ export default function ActorCard({ actor, onChoose, animationKey, side }) {
         >
             <div className="actor-card__image-wrapper">
                 <img
-                    src={actor.image}
-                    alt={actor.name}
+                    src={`https://images.weserv.nl/?url=${encodeURIComponent(actor.image || actor.poster)}&w=500&h=700&fit=cover`}
+                    alt={actor.name || actor.title}
                     className="actor-card__image"
                     draggable={false}
                 />
                 <div className="actor-card__overlay" />
             </div>
             <div className="actor-card__info">
-                <h2 className="actor-card__name">{actor.name}</h2>
+                <h2 className="actor-card__name">{actor.name || actor.title}</h2>
             </div>
             <div className="actor-card__choose-hint">
                 <span>Choose</span>
