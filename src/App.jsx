@@ -112,7 +112,7 @@ export default function App() {
                 {!state.started && (
                     <div className="category-select">
                         <h2 className="category-select__heading">
-                            {!state.showActorSub ? "Choose a Category" : "Choose Actor Origin"}
+                            {!state.showActorSub ? "Choose a Category" : (state.subCategory === "indian" ? "Indian Actors" : "Foreign Actors")}
                         </h2>
                         <div className="category-select__buttons">
                             {!state.showActorSub ? (
@@ -158,6 +158,9 @@ export default function App() {
 
                 {state.started && !state.gameOver && (
                     <>
+                        <h2 className="game-screen__title">
+                            {state.category === "movies" ? "Movies" : (state.subCategory === "indian" ? "Indian Actors" : "Foreign Actors")}
+                        </h2>
                         <ProgressBar
                             remaining={remainingItems}
                             total={state.totalItems}
@@ -178,6 +181,7 @@ export default function App() {
                         eliminated={state.eliminated}
                         onRestart={handleRestart}
                         section={state.category}
+                        subCategory={state.subCategory}
                     />
                 )}
             </main>

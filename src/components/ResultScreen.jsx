@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 
-function generateSummary(winner, eliminated, section) {
+function generateSummary(winner, eliminated, section, subCategory) {
     // Tally genres from all chosen winners along the way
     const g = winner.genres || [];
     const primary = g[0] || "Drama";
     const isActor = section === "actors";
+    const isIndian = subCategory === "indian";
 
     const actorSummaries = {
         Drama: "You're drawn to raw emotion and powerful storytelling. You value depth, vulnerability, and performances that leave you thinking for days.",
@@ -20,6 +21,8 @@ function generateSummary(winner, eliminated, section) {
         Historical: "You're drawn to stories rooted in truth. The weight of history and its heroes speak powerfully to you.",
         Mystery: "You love unraveling puzzles. Clever plots and unexpected revelations keep your mind engaged and delighted.",
         Narration: "You appreciate the power of a great voice and storytelling craft. Atmosphere and wisdom draw you in.",
+        Social: "You appreciate films that reflect society's truths. You look for cinema that not only entertains but makes a meaningful statement.",
+        Arthouse: "You're an intellectual cinephile. You prefer the nuance of performance and artistic vision over commercial tropes.",
     };
 
     const movieSummaries = {
@@ -40,20 +43,23 @@ function generateSummary(winner, eliminated, section) {
         ? (actorSummaries[primary] || actorSummaries["Drama"])
         : (movieSummaries[primary] || movieSummaries["Drama"]);
 
+    const label = isActor ? (isIndian ? "Indian Actor" : "Actor") : "Movie";
+
     const leadText = isActor
-        ? `Your choice of **${winner.name}** as your favorite actor reveals a lot about your taste!`
+        ? `Your choice of **${winner.name}** as your favorite ${label} reveals a lot about your taste!`
         : `Your ultimate favorite movie is **${winner.name}**! This choice says something special about you.`;
 
     return `${leadText} ${taste}`;
 }
 
-export default function ResultScreen({ winner, eliminated, onRestart, section }) {
+export default function ResultScreen({ winner, eliminated, onRestart, section, subCategory }) {
     const summary = useMemo(
-        () => generateSummary(winner, eliminated, section),
-        [winner, eliminated, section]
+        () => generateSummary(winner, eliminated, section, subCategory),
+        [winner, eliminated, section, subCategory]
     );
 
     const genresText = winner.genres ? winner.genres.join(" • ") : "";
+    const isIndian = subCategory === "indian";
 
     return (
         <div className="result-screen" id="result-screen">
@@ -61,7 +67,7 @@ export default function ResultScreen({ winner, eliminated, onRestart, section })
                 <div className="result-screen__trophy">👑</div>
                 <h1 className="result-screen__heading">
                     {section === "actors"
-                        ? "Your Ultimate Favorite Actor"
+                        ? (isIndian ? "Your Ultimate Favorite Indian Actor" : "Your Ultimate Favorite Foreign Actor")
                         : "Your Ultimate Favorite Movie"}
                 </h1>
                 <div className="result-screen__winner">
