@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import actorsData from "./data/actors";
+import indianActorsData from "./data/indian_actors";
 import moviesData from "./data/movies";
 import GameScreen from "./components/GameScreen";
 import ResultScreen from "./components/ResultScreen";
@@ -15,8 +16,14 @@ function shuffle(arr) {
     return a;
 }
 
-function initGame(category) {
-    const data = category === "movies" ? moviesData : actorsData;
+function initGame(category, subCategory = null) {
+    let data;
+    if (category === "movies") {
+        data = moviesData;
+    } else if (category === "actors") {
+        data = subCategory === "indian" ? indianActorsData : actorsData;
+    }
+
     const shuffled = shuffle(data);
     return {
         champion: shuffled[0],
@@ -27,12 +34,18 @@ function initGame(category) {
         round: 0,
         started: true,
         category: category,
+        subCategory: subCategory,
         totalItems: data.length
     };
 }
 
 export default function App() {
-    const [state, setState] = useState({ started: false, category: null });
+    const [state, setState] = useState({
+        started: false,
+        category: null,
+        subCategory: null,
+        showActorSub: false
+    });
 
     const handleChoose = useCallback((chosen) => {
         setState((prev) => {
@@ -68,12 +81,12 @@ export default function App() {
         });
     }, []);
 
-    const startGame = useCallback((category) => {
-        setState(initGame(category));
+    const startGame = useCallback((category, subCategory = null) => {
+        setState({ ...initGame(category, subCategory), showActorSub: false });
     }, []);
 
     const handleRestart = useCallback(() => {
-        setState({ started: false, category: null });
+        setState({ started: false, category: null, subCategory: null, showActorSub: false });
     }, []);
 
     const remainingItems = state.started ? state.remaining.length + (state.gameOver ? 0 : 2) : 0;
@@ -98,14 +111,47 @@ export default function App() {
             <main className="app__main">
                 {!state.started && (
                     <div className="category-select">
-                        <h2 className="category-select__heading">Choose a Category</h2>
+                        <h2 className="category-select__heading">
+                            {!state.showActorSub ? "Choose a Category" : "Choose Actor Origin"}
+                        </h2>
                         <div className="category-select__buttons">
-                            <button className="category-select__btn" onClick={() => startGame('actors')}>
-                                🎬 Actors
-                            </button>
-                            <button className="category-select__btn" onClick={() => startGame('movies')}>
-                                🍿 Movies
-                            </button>
+                            {!state.showActorSub ? (
+                                <>
+                                    <button
+                                        className="category-select__btn"
+                                        onClick={() => setState(s => ({ ...s, showActorSub: true }))}
+                                    >
+                                        🎬 Actors
+                                    </button>
+                                    <button
+                                        className="category-select__btn"
+                                        onClick={() => startGame('movies')}
+                                    >
+                                        🍿 Movies
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        className="category-select__btn"
+                                        onClick={() => startGame('actors', 'foreign')}
+                                    >
+                                        🌍 Foreign Actors
+                                    </button>
+                                    <button
+                                        className="category-select__btn"
+                                        onClick={() => startGame('actors', 'indian')}
+                                    >
+                                        🇮🇳 Indian Actors
+                                    </button>
+                                    <button
+                                        className="category-select__btn category-select__btn--back"
+                                        onClick={() => setState(s => ({ ...s, showActorSub: false }))}
+                                    >
+                                        ⬅️ Back
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}
@@ -115,7 +161,7 @@ export default function App() {
                         <ProgressBar
                             remaining={remainingItems}
                             total={state.totalItems}
-                            label={state.category === "movies" ? "movie" : "actor"}
+                            label={state.category === "movies" ? "movie" : (state.subCategory === "indian" ? "Indian actor" : "Foreign actor")}
                         />
                         <GameScreen
                             champion={state.champion}
